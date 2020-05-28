@@ -9,12 +9,13 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 export class AppComponent {
   title = 'angularform';
   'userForm': FormGroup
+
   countryData = {
     IN: {
       code: "IN",
       name: "India",
-      states: [
-        {
+      states: {
+        TN:{
           code: "TN",
           name: "Tamil Nadu",
           cities: [
@@ -29,7 +30,7 @@ export class AppComponent {
           ]
         }
         ,
-        {
+        KL:{
           code: "KL",
           name: "Kerala",
           cities: [
@@ -43,13 +44,13 @@ export class AppComponent {
             }
           ]
         }
-      ],
+      },
     },
     US: {
       code: "US",
       name: "United States of America",
-      states: [
-        {
+      states: {
+       NY: {
           code: "NY",
           name: "New York",
           cities: [
@@ -63,7 +64,7 @@ export class AppComponent {
             }
           ]
         },
-        {
+       NJ: {
           code: "NJ",
           name: "NJ 1",
           cities: [
@@ -77,46 +78,90 @@ export class AppComponent {
             }
           ]
         }
-      ]
+      }
     }
   }
 
-  countryList;
-  stateList;
-  cityList;
+  countryList=[];
+  stateList=[];
+  cityList=[];
+  i:string;
+  constructor(private fb: FormBuilder) {
+    this.countryList = Object.keys(this.countryData);
+    this.userForm = this.fb.group({
+      username: this.fb.control("", Validators.required),
+      email: this.fb.control("", [Validators.required, Validators.email]),
+      phonenumber: this.fb.control("", Validators.required),
+      password: this.fb.control("", Validators.required),
+      cpassword: this.fb.control("", Validators.required),
+      address: this.fb.array([
+        this.fb.group({
+          country: this.fb.control("", Validators.required),
+          state: this.fb.control("", Validators.required),
+          city: this.fb.control("", Validators.required),
+        }),
+        this.fb.group({
+          country: this.fb.control("", Validators.required),
+          state: this.fb.control("", Validators.required),
+          city: this.fb.control("", Validators.required),
+        }),
+        this.fb.group({
+          country: this.fb.control("", Validators.required),
+          state: this.fb.control("", Validators.required),
+          city: this.fb.control("", Validators.required),
+        })]),
+      gender: this.fb.control('', Validators.required),
+      mstatus: this.fb.control('', Validators.required),
+      favfood: this.fb.control('', Validators.required),
+      favcolor: this.fb.control('', Validators.required),
 
-  constructor(fb: FormBuilder) {
-    this.userForm = new FormGroup({
-      'username': new FormControl('', Validators.required),
-      'email': new FormControl('', [Validators.required, Validators.email]),
-      'phonenumber': new FormControl('', Validators.required),
-      'password': new FormControl('', Validators.required),
-      'cpassword': new FormControl('', Validators.required),
-      'country': new FormControl('', Validators.required),
-      'state': new FormControl('', Validators.required),
-      'city': new FormControl('', Validators.required),
-      'gender': new FormControl('', Validators.required),
-      'mstatus': new FormControl('', Validators.required),
-      'favfood': new FormControl('', Validators.required),
-      'favcolor': new FormControl('', Validators.required),
-    })
+    });
+    /* this.userForm = new FormGroup({
+       'username': new FormControl('', Validators.required),
+       'email': new FormControl('', [Validators.required, Validators.email]),
+       'phonenumber': new FormControl('', Validators.required),
+       'password': new FormControl('', Validators.required),
+       'cpassword': new FormControl('', Validators.required),
+       'country': new FormControl('', Validators.required),
+       'state': new FormControl('', Validators.required),
+       'city': new FormControl('', Validators.required),
+       'gender': new FormControl('', Validators.required),
+       'mstatus': new FormControl('', Validators.required),
+       'favfood': new FormControl('', Validators.required),
+       'favcolor': new FormControl('', Validators.required),
+     })*/
 
 
 
-    let countrykeys = Object.keys(this.countryData);
-    console.log(countrykeys);
-    this.countryList = countrykeys.map((key) => this.countryData[key])
-    console.log(this.countryList);
+    
 
-    this.userForm.get("country").valueChanges.subscribe((data) => {
+   /* this.userForm.get("address").get("country").valueChanges.subscribe(data => {
       this.stateList = this.countryData[data].states
     })
 
-    this.userForm.get("state").valueChanges.subscribe((data) => {
+    
+
+    this.userForm.get("address").get("state").valueChanges.subscribe(data => {
       let tempCityList = this.stateList.find(state => state.code == data)
       this.cityList = tempCityList.cities;
       console.log(this.cityList);
-    });
+    });*/
+
+    for(let  i in this.userForm.get('address').value){
+      this.userForm.get('address').get(i).get('country').valueChanges.subscribe((data) => {
+        this.stateList[i] = Object.keys(this.countryData[data].states).map((item) => {
+          console.log(this.countryData[data].states[item]);
+          return this.countryData[data].states[item]; 
+        });
+      });
+    }
+    for(let i in this.userForm.get('address').value){
+      // console.log( this.myForm.get('address').get(i).get('state'))
+      this.userForm.get('address').get(i).get('state').valueChanges.subscribe((data) => {
+        this.cityList[i] = this.countryData[this.userForm.get('address').get(i).get('country').value]['states'][data]['cities'];
+        console.log(this.cityList);
+      });
+    }
 
     // this.cityList = this.countryData[data].states[0].cities
     //  console.log(this.stateList);
@@ -134,6 +179,8 @@ export class AppComponent {
     console.log(this.userForm.value);
     console.log(this.userForm.valid);
   }
+
+ 
 
 
 

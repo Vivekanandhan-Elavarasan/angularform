@@ -3,84 +3,106 @@
   <div class="row">
     <div class="col-lg-12" style="text-align: center;">
       <h1>Application form</h1>
-      </div>
-    </div>
-    <form [formGroup]="userForm" (submit)="submitData()">
-  <div class="row">
-    <div class="col-lg-6">
-      <label>Name</label>
-      <input [ngClass]="{'control-error':(!userForm.get('username').valid && userForm.get('username').dirty)}" type="text" formControlName="username" class="form-control">
-    </div>
-    <div class="col-lg-6">
-      <label>E-Mail</label>
-      <input [ngClass]="{'control-error':(!userForm.get('email').valid && userForm.get('email').dirty)}" type="text" formControlName="email" class="form-control">
     </div>
   </div>
-  <label>phonenumber</label>
-  <input [ngClass]="{'control-error':(!userForm.get('phonenumber').valid && userForm.get('phonenumber').dirty)}" type="text" formControlName="phonenumber" class="form-control">
-  <div class="row">
-    <div class="col-lg-6">
-      <label>password</label>
-      <input [ngClass]="{'control-error':(!userForm.get('password').valid && userForm.get('password').dirty)}" type="password" id="password" class="form-control" formControlName="password" minlength="8">
-    </div>
-    <div class="col-lg-6">
-      <label>confirm password</label>
-      <input  [ngClass]="{'control-error':(!userForm.get('cpassword').valid && userForm.get('cpassword').dirty)}" type="password" id="cpassword" class="form-control" formControlName="cpassword" minlength="8">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-4">
-      <label>Country</label>
-      <select formControlName="country" class="form-control">
-        <option *ngFor="let country of countryList" [value]="country.code">{{country.name}}</option>
-      </select>
-    </div>
-    <div class="col-lg-4">
-      <label>State</label>
-      <select formControlName="state" class="form-control">
-        <option *ngFor="let state of stateList" [value]="state.code">{{state.name}}</option><br>
-      </select>
-    </div>
-    <div class="col-lg-4">
-      <label>City</label>
-      <select  formControlName="city" class="form-control">
-        <option *ngFor="let city of cityList" [value]="city.code">{{city.name}}</option><br>
-      </select>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <label>Gender</label><br>
-      <input type="radio" id="male" formControlName="gender" value="male">
-      <label for="male">Male</label><br>
-      <input type="radio" id="female" formControlName="gender" value="female">
-      <label for="female">Female</label><br>
-    </div>
-    <div class="col-lg-6">
-      <label>Marital Status</label><br>
-      <input type="radio" id="single" formControlName="mstatus" value="single">
-      <label for="single">single</label><br>
-      <input type="radio" id="married" formControlName="mstatus" value="married">
-      <label for="married">Married</label><br>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <label>Favourite Food</label>
-      <input  [ngClass]="{'control-error':(!userForm.get('favfood').valid && userForm.get('favfood').dirty)}"type="text" formControlName="favfood" class="form-control"><br>
-    </div>
-    <div class="col-lg-6">
-      <label>Favourite color</label>
-      <input  [ngClass]="{'control-error':(!userForm.get('favcolor').valid && userForm.get('favcolor').dirty)}" type="text" formControlName="favcolor" class="form-control">
-    </div>
-  </div>
-  <div>
+  <form [formGroup]="userForm" (submit)="submitData()">
     <div class="row">
-      <div class="col-lg-12" style="text-align: center;">
-        <input type="submit" class="btn btn-primary">
+      <div class="col-lg-6">
+        <label>Name</label>
+        <input [ngClass]="{'control-error':(!userForm.get('username').valid && userForm.get('username').dirty)}"
+          type="text" formControlName="username" class="form-control">
+      </div>
+      <div class="col-lg-6">
+        <label>E-Mail</label>
+        <input [ngClass]="{'control-error':(!userForm.get('email').valid && userForm.get('email').dirty)}" type="text"
+          formControlName="email" class="form-control">
       </div>
     </div>
-  </div>
-</form>
-</div>
+    <label>phonenumber</label>
+    <input [ngClass]="{'control-error':(!userForm.get('phonenumber').valid && userForm.get('phonenumber').dirty)}"
+      type="text" formControlName="phonenumber" class="form-control">
+    <div class="row">
+      <div class="col-lg-6">
+        <label>password</label>
+        <input [ngClass]="{'control-error':(!userForm.get('password').valid && userForm.get('password').dirty)}"
+          type="password" id="password" class="form-control" formControlName="password" minlength="8">
+      </div>
+      <div class="col-lg-6">
+        <label>confirm password</label>
+        <input [ngClass]="{'control-error':(!userForm.get('cpassword').valid && userForm.get('cpassword').dirty)}"
+          type="password" id="cpassword" class="form-control" formControlName="cpassword" minlength="8">
+          <span *ngIf="userForm.get('password').value!=userForm.get('cpassword').value && userForm.get('cpassword').dirty" style="color: red;">Password doesn't match</span>
+      </div>
+    </div>
 
+    <div class="row" formArrayName="address">
+      <div  *ngFor="let item of userForm.get('address')['controls']; index as i;">
+        <div [formGroupName]="i">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label>Country</label>
+              <select formControlName="country" class="form-control">
+                <option *ngFor="let item of countryList" [value]="item">{{countryData[item].name}}</option>
+      
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label>State</label>
+              <select formControlName="state" class="form-control">
+                <option *ngFor="let item of stateList[i]" [value]="item.code">{{item.name}}</option><br>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label>City</label>
+              <select formControlName="city" class="form-control">
+                <option *ngFor="let item of cityList[i]" [value]="item.code">{{item.name}}</option><br>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-lg-6">
+        <label>Gender</label><br>
+        <input type="radio" id="male" formControlName="gender" value="male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" formControlName="gender" value="female">
+        <label for="female">Female</label><br>
+      </div>
+      <div class="col-lg-6">
+        <label>Marital Status</label><br>
+        <input type="radio" id="single" formControlName="mstatus" value="single">
+        <label for="single">single</label><br>
+        <input type="radio" id="married" formControlName="mstatus" value="married">
+        <label for="married">Married</label><br>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <label>Favourite Food</label>
+        <input [ngClass]="{'control-error':(!userForm.get('favfood').valid && userForm.get('favfood').dirty)}"
+          type="text" formControlName="favfood" class="form-control"><br>
+      </div>
+      <div class="col-lg-6">
+        <label>Favourite color</label>
+        <input [ngClass]="{'control-error':(!userForm.get('favcolor').valid && userForm.get('favcolor').dirty)}"
+          type="text" formControlName="favcolor" class="form-control">
+      </div>
+    </div>
+    <div>
+      <div class="row">
+        <div class="col-lg-12" style="text-align: center;">
+          <input type="submit" class="btn btn-primary" *ngIf="this.userForm.valid">
+          <input type="submit" value="Submit" class="btn btn-primary" *ngIf="!this.userForm.valid" disabled>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
